@@ -1,0 +1,2 @@
+# ConcurrentObservableCollections
+ConcurrentObservableCollections based on System.Collections.Concurrent.ConcurrentCollections
