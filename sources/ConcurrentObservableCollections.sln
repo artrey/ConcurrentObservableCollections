@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcurrentObservableCollections", "ConcurrentObservableCollections\ConcurrentObservableCollections.csproj", "{75B5FB5A-0995-4822-AC5F-997D4DCF1276}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConcurrentObservableCollections", "ConcurrentObservableCollections\ConcurrentObservableCollections.csproj", "{75B5FB5A-0995-4822-AC5F-997D4DCF1276}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExamplesAndTests", "ExamplesAndTests", "{6787C7D8-2327-40D6-BBEC-FB0DA51904B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcurrentObservableCollections.Tests", "ExamplesAndTests\ConcurrentObservableCollections.Tests\ConcurrentObservableCollections.Tests.csproj", "{BE243673-C6EB-416E-887D-35262A26D408}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{75B5FB5A-0995-4822-AC5F-997D4DCF1276}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75B5FB5A-0995-4822-AC5F-997D4DCF1276}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75B5FB5A-0995-4822-AC5F-997D4DCF1276}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE243673-C6EB-416E-887D-35262A26D408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE243673-C6EB-416E-887D-35262A26D408}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE243673-C6EB-416E-887D-35262A26D408}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE243673-C6EB-416E-887D-35262A26D408}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BE243673-C6EB-416E-887D-35262A26D408} = {6787C7D8-2327-40D6-BBEC-FB0DA51904B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {76F35D5D-82ED-4E84-87E8-90AAE597D99B}
