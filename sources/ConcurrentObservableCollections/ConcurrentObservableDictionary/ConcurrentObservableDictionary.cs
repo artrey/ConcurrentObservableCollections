@@ -2,16 +2,21 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 {
-    public class ConcurrentObservableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>
+    public class ConcurrentObservableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IPartialObservableDictionary<TKey, TValue>
     {
         public event EventHandler<DictionaryChangedEventArgs<TKey, TValue>> CollectionChanged;
 
         protected virtual void OnCollectionChanged(DictionaryChangedEventArgs<TKey, TValue> changeAction)
         {
             CollectionChanged?.Invoke(this, changeAction);
+
+            if (!_observers.TryGetValue(changeAction.Key, out var observers)) return;
+            Task.WaitAll(observers.Select(o => Task.Run(() => o.OnEventOccur(changeAction))).ToArray());
         }
 
         protected void OnCollectionChanged(NotifyCollectionChangedAction action, TKey key, TValue newValue, TValue oldValue)
@@ -83,6 +88,7 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
         public new void Clear()
         {
             base.Clear();
+            _observers.Clear();
             OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Reset));
         }
 
@@ -197,5 +203,52 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
             return tryUpdate;
         }
+
+        public IDictionaryObserver<TKey, TValue> AddPartialObserver(IDictionaryObserver<TKey, TValue> observer, params TKey[] keys)
+        {
+            if (observer is null) throw new ArgumentNullException(nameof(observer));
+            if (keys is null) throw new ArgumentNullException(nameof(keys));
+
+            foreach (var key in keys)
+            {
+                _observers.AddOrUpdate(key, new HashSet<IDictionaryObserver<TKey, TValue>> {observer}, (k, o) =>
+                {
+                    o.Add(observer);
+                    return o;
+                });
+            }
+
+            return observer;
+        }
+
+        public bool RemovePartialObserver(IDictionaryObserver<TKey, TValue> observer, params TKey[] keys)
+        {
+            if (observer is null) throw new ArgumentNullException(nameof(observer));
+            if (keys is null) throw new ArgumentNullException(nameof(keys));
+
+            return keys.Select(key => 
+                _observers.TryGetValue(key, out var observers) && observers.Contains(observer) && observers.Remove(observer)).Any(b => b);
+        }
+
+        public bool RemovePartialObserver(IDictionaryObserver<TKey, TValue> observer)
+        {
+            if (observer is null) throw new ArgumentNullException(nameof(observer));
+
+            return _observers.Select(pair => pair.Value.Contains(observer) && pair.Value.Remove(observer)).Any(b => b);
+        }
+
+        public bool RemovePartialObserver(params TKey[] keys)
+        {
+            if (keys is null) throw new ArgumentNullException(nameof(keys));
+
+            return keys.Select(key => _observers.ContainsKey(key) && _observers.TryRemove(key, out _)).Any(b => b);
+        }
+
+        #region private data
+
+        private readonly ConcurrentDictionary<TKey, ICollection<IDictionaryObserver<TKey, TValue>>> _observers 
+            = new ConcurrentDictionary<TKey, ICollection<IDictionaryObserver<TKey, TValue>>>();
+
+        #endregion
     }
 }
