@@ -14,6 +14,29 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
             CollectionChanged?.Invoke(this, changeAction);
         }
 
+        protected void OnCollectionChanged(NotifyCollectionChangedAction action, TKey key, TValue newValue, TValue oldValue)
+        {
+            OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(action, key, newValue, oldValue));
+        }
+
+        protected void OnCollectionChanged(NotifyCollectionChangedAction action, TKey key, TValue value)
+        {
+            TValue newValue = default(TValue);
+            TValue oldValue = default(TValue);
+            switch (action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    newValue = value;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    oldValue = value;
+                    break;
+                default:
+                    return;
+            }
+            OnCollectionChanged(action, key, newValue, oldValue);
+        }
+
         #region Ctors
         public ConcurrentObservableDictionary()
         {
@@ -77,11 +100,11 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
             if (isUpdated && !value.Equals(oldValue))
             {
-                OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Replace, key, value, oldValue));
+                OnCollectionChanged(NotifyCollectionChangedAction.Replace, key, value, oldValue);
             }
             else if (!isUpdated)
             {
-                OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Add, key, value));
+                OnCollectionChanged(NotifyCollectionChangedAction.Add, key, value);
             }
 
             return value;
@@ -101,11 +124,11 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
             if (isUpdated && !value.Equals(oldValue))
             {
-                OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Replace, key, value, oldValue));
+                OnCollectionChanged(NotifyCollectionChangedAction.Replace, key, value, oldValue);
             }
             else if (!isUpdated)
             {
-                OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Add, key, value));
+                OnCollectionChanged(NotifyCollectionChangedAction.Add, key, value);
             }
 
             return value;
@@ -133,7 +156,7 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
             if (isAdded)
             {
-                OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Add, key, value));
+                OnCollectionChanged(NotifyCollectionChangedAction.Add, key, value);
             }
 
             return value;
@@ -145,7 +168,7 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
             if (tryAdd)
             {
-                OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Add, key, value));
+                OnCollectionChanged(NotifyCollectionChangedAction.Add, key, value);
             }
 
             return tryAdd;
@@ -157,7 +180,7 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
             if (tryRemove)
             {
-                OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Remove, key, value));
+                OnCollectionChanged(NotifyCollectionChangedAction.Remove, key, value);
             }
 
             return tryRemove;
@@ -169,7 +192,7 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
             if (tryUpdate)
             {
-                OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Replace, key, newValue, comparisonValue));
+                OnCollectionChanged(NotifyCollectionChangedAction.Replace, key, newValue, comparisonValue);
             }
 
             return tryUpdate;

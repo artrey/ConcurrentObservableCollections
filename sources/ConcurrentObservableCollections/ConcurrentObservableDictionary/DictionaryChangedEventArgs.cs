@@ -18,25 +18,6 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
             OldValue = oldValue;
         }
 
-        public DictionaryChangedEventArgs(NotifyCollectionChangedAction action, TKey key, TValue value)
-            : this(action)
-        {
-            Key = key;
-            if (action == NotifyCollectionChangedAction.Add)
-            {
-                NewValue = value;
-            }
-            else if (action == NotifyCollectionChangedAction.Remove)
-            {
-                OldValue = value;
-            }
-            else
-            {
-                throw new ArgumentException(
-                    $@"Action may be only '{NotifyCollectionChangedAction.Add}' or '{NotifyCollectionChangedAction.Remove}'. Got: '{action}'");
-            }
-        }
-
         public NotifyCollectionChangedAction Action { get; }
         public TKey Key { get; }
         public TValue NewValue { get; }
