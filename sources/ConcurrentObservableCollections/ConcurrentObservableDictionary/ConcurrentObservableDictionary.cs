@@ -13,10 +13,14 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
         protected virtual void OnCollectionChanged(DictionaryChangedEventArgs<TKey, TValue> changeAction)
         {
-            CollectionChanged?.Invoke(this, changeAction);
+            var tasks = new List<Task> { Task.Run(() => CollectionChanged?.Invoke(this, changeAction)) };
 
-            if (!_observers.TryGetValue(changeAction.Key, out var observers)) return;
-            Task.WaitAll(observers.Select(o => Task.Run(() => o.OnEventOccur(changeAction))).ToArray());
+            if (_observers.TryGetValue(changeAction.Key, out var observers))
+            {
+                tasks.AddRange(observers.Select(o => Task.Run(() => o.OnEventOccur(changeAction))));
+            }
+
+            Task.WaitAll(tasks.ToArray());
         }
 
         protected void OnCollectionChanged(NotifyCollectionChangedAction action, TKey key, TValue newValue, TValue oldValue)
