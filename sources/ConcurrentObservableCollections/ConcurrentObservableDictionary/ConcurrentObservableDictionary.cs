@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 {
-    public class ConcurrentObservableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IPartialObservableDictionary<TKey, TValue>
+    public class ConcurrentObservableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>
     {
         public event EventHandler<DictionaryChangedEventArgs<TKey, TValue>> CollectionChanged;
 
@@ -223,6 +223,11 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
             }
 
             return observer;
+        }
+
+        public IDictionaryObserver<TKey, TValue> AddPartialObserver(Action<DictionaryChangedEventArgs<TKey, TValue>> action, params TKey[] keys)
+        {
+            return AddPartialObserver(new SimpleActionDictionaryObserver<TKey, TValue>(action), keys);
         }
 
         public bool RemovePartialObserver(IDictionaryObserver<TKey, TValue> observer, params TKey[] keys)

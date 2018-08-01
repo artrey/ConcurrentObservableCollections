@@ -33,6 +33,20 @@ namespace ConcurrentObservableCollections.Tests
         }
 
         [TestMethod]
+        public void TestAddPartialEventsByAction()
+        {
+            var data = new ConcurrentObservableDictionary<string, double>();
+            var ret = 0.0;
+            data.AddPartialObserver(args => ret = args.NewValue, "test", "test2");
+
+            data.AddOrUpdate("test", 1.0);
+            Assert.AreEqual(1.0, ret, "Error in test key");
+
+            data.AddOrUpdate("test2", 10.0);
+            Assert.AreEqual(10.0, ret, "Error in test2 key");
+        }
+
+        [TestMethod]
         public void TestRemovePartialEvents()
         {
             var data = new ConcurrentObservableDictionary<string, double>();
