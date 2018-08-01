@@ -30,8 +30,8 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
         protected void OnCollectionChanged(NotifyCollectionChangedAction action, TKey key, TValue value)
         {
-            TValue newValue = default(TValue);
-            TValue oldValue = default(TValue);
+            var newValue = default(TValue);
+            var oldValue = default(TValue);
             switch (action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -98,10 +98,10 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
         public new TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
         {
-            bool isUpdated = false;
-            TValue oldValue = default(TValue);
+            var isUpdated = false;
+            var oldValue = default(TValue);
 
-            TValue value = base.AddOrUpdate(key, addValue, (k, v) =>
+            var value = base.AddOrUpdate(key, addValue, (k, v) =>
             {
                 isUpdated = true;
                 oldValue = v;
@@ -122,10 +122,10 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
         public new TValue AddOrUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
         {
-            bool isUpdated = false;
-            TValue oldValue = default(TValue);
+            var isUpdated = false;
+            var oldValue = default(TValue);
 
-            TValue value = base.AddOrUpdate(key, addValueFactory, (k, v) =>
+            var value = base.AddOrUpdate(key, addValueFactory, (k, v) =>
             {
                 isUpdated = true;
                 oldValue = v;
@@ -156,9 +156,9 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
         public new TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
         {
-            bool isAdded = false;
+            var isAdded = false;
 
-            TValue value = base.GetOrAdd(key, k =>
+            var value = base.GetOrAdd(key, k =>
             {
                 isAdded = true;
                 return valueFactory(k);
@@ -174,7 +174,7 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
         public new bool TryAdd(TKey key, TValue value)
         {
-            bool tryAdd = base.TryAdd(key, value);
+            var tryAdd = base.TryAdd(key, value);
 
             if (tryAdd)
             {
@@ -186,7 +186,7 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
         public new bool TryRemove(TKey key, out TValue value)
         {
-            bool tryRemove = base.TryRemove(key, out value);
+            var tryRemove = base.TryRemove(key, out value);
 
             if (tryRemove)
             {
@@ -198,7 +198,7 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 
         public new bool TryUpdate(TKey key, TValue newValue, TValue comparisonValue)
         {
-            bool tryUpdate = base.TryUpdate(key, newValue, comparisonValue);
+            var tryUpdate = base.TryUpdate(key, newValue, comparisonValue);
 
             if (tryUpdate)
             {

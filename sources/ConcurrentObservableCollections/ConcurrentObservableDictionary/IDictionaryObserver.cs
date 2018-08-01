@@ -1,6 +1,4 @@
-﻿using System.Collections.Specialized;
-
-namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
+﻿namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
 {
     public interface IDictionaryObserver<TKey, TValue>
     {
