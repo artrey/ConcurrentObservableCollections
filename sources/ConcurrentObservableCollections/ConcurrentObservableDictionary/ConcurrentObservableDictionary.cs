@@ -225,32 +225,47 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
             return observer;
         }
 
-        public IDictionaryObserver<TKey, TValue> AddPartialObserver(Action<DictionaryChangedEventArgs<TKey, TValue>> action, params TKey[] keys)
+        public IDictionaryObserver<TKey, TValue> AddPartialObserver(
+            Action<DictionaryChangedEventArgs<TKey, TValue>> action, params TKey[] keys)
         {
             return AddPartialObserver(new SimpleActionDictionaryObserver<TKey, TValue>(action), keys);
         }
 
-        public bool RemovePartialObserver(IDictionaryObserver<TKey, TValue> observer, params TKey[] keys)
+        public Dictionary<TKey, HashSet<IDictionaryObserver<TKey, TValue>>> RemovePartialObserver(
+            IDictionaryObserver<TKey, TValue> observer, params TKey[] keys)
         {
             if (observer is null) throw new ArgumentNullException(nameof(observer));
             if (keys is null) throw new ArgumentNullException(nameof(keys));
 
-            return keys.Select(key => 
-                _observers.TryGetValue(key, out var observers) && observers.Contains(observer) && observers.Remove(observer)).Any(b => b);
+            var removed = keys.Where(key => 
+                _observers.TryGetValue(key, out var observers) && observers.Contains(observer) && observers.Remove(observer));
+            return removed.ToDictionary(k => k, k => new HashSet<IDictionaryObserver<TKey, TValue>> {observer});
         }
 
-        public bool RemovePartialObserver(IDictionaryObserver<TKey, TValue> observer)
+        public Dictionary<TKey, HashSet<IDictionaryObserver<TKey, TValue>>> RemovePartialObserver(
+            IDictionaryObserver<TKey, TValue> observer)
         {
             if (observer is null) throw new ArgumentNullException(nameof(observer));
 
-            return _observers.Select(pair => pair.Value.Contains(observer) && pair.Value.Remove(observer)).Any(b => b);
+            var removed = _observers.Where(pair => pair.Value.Contains(observer) && pair.Value.Remove(observer)).Select(pair => pair.Key);
+            return removed.ToDictionary(k => k, k => new HashSet<IDictionaryObserver<TKey, TValue>> { observer });
         }
 
-        public bool RemovePartialObserver(params TKey[] keys)
+        public Dictionary<TKey, HashSet<IDictionaryObserver<TKey, TValue>>> RemovePartialObserver(
+            params TKey[] keys)
         {
             if (keys is null) throw new ArgumentNullException(nameof(keys));
 
-            return keys.Select(key => _observers.ContainsKey(key) && _observers.TryRemove(key, out _)).Any(b => b);
+            var removed = keys.Select(key =>
+            {
+                if (_observers.ContainsKey(key) && _observers.TryRemove(key, out var observers))
+                {
+                    return new KeyValuePair<TKey, HashSet<IDictionaryObserver<TKey, TValue>>>(
+                        key, new HashSet<IDictionaryObserver<TKey, TValue>>(observers));
+                }
+                return new KeyValuePair<TKey, HashSet<IDictionaryObserver<TKey, TValue>>>(key, null);
+            });
+            return removed.Where(pair => pair.Value != null).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
         #region private data

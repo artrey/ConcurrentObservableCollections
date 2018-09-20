@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>artrey</Authors>
+    <Description>ConcurrentObservableCollections based on System.Collections.Concurrent.ConcurrentCollections</Description>
+    <Copyright>Copyright 2018</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/artrey/ConcurrentObservableCollections/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/artrey/ConcurrentObservableCollections</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/artrey/ConcurrentObservableCollections</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>netstandard observable concurrent dictionary</PackageTags>
+    <Version>1.1.4</Version>
+    <PackageReleaseNotes>Updated returned data in RemovePartialObserver</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
