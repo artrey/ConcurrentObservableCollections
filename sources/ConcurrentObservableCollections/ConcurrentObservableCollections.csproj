@@ -11,8 +11,8 @@
     <RepositoryUrl>https://github.com/artrey/ConcurrentObservableCollections</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>netstandard observable concurrent dictionary</PackageTags>
-    <Version>1.1.5</Version>
-    <PackageReleaseNotes>Separated clearing data and observers</PackageReleaseNotes>
+    <Version>1.1.6</Version>
+    <PackageReleaseNotes>Remove all observers returns the removed dict now</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

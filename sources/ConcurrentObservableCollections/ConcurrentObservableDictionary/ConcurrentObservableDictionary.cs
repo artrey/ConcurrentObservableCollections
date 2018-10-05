@@ -267,9 +267,11 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
             return removed.Where(pair => pair.Value != null).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
-        public void RemoveAllObservers()
+        public Dictionary<TKey, HashSet<IDictionaryObserver<TKey, TValue>>> RemoveAllObservers()
         {
+            var ret = _observers.ToDictionary(kv => kv.Key, kv => new HashSet<IDictionaryObserver<TKey, TValue>>(kv.Value));
             _observers.Clear();
+            return ret;
         }
 
         #region private data
