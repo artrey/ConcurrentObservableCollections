@@ -92,7 +92,6 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
         public new void Clear()
         {
             base.Clear();
-            _observers.Clear();
             OnCollectionChanged(new DictionaryChangedEventArgs<TKey, TValue>(NotifyCollectionChangedAction.Reset));
         }
 
@@ -266,6 +265,11 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
                 return new KeyValuePair<TKey, HashSet<IDictionaryObserver<TKey, TValue>>>(key, null);
             });
             return removed.Where(pair => pair.Value != null).ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
+
+        public void RemoveAllObservers()
+        {
+            _observers.Clear();
         }
 
         #region private data
