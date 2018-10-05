@@ -15,7 +15,8 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
         {
             var tasks = new List<Task> { Task.Run(() => CollectionChanged?.Invoke(this, changeAction)) };
 
-            if (_observers.TryGetValue(changeAction.Key, out var observers))
+            if (changeAction.Action != NotifyCollectionChangedAction.Reset && 
+                _observers.TryGetValue(changeAction.Key, out var observers))
             {
                 tasks.AddRange(observers.Select(o => Task.Run(() => o.OnEventOccur(changeAction))));
             }

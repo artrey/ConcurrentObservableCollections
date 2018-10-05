@@ -85,12 +85,6 @@ namespace ConcurrentObservableCollections.Tests
             var obs = new SimpleObserver();
             data.AddPartialObserver(obs, "test", "test2", "test3");
 
-            data.AddOrUpdate("test", 1.0);
-            Assert.AreEqual(1.0, obs.LastValue, "Error in test key");
-
-            data.AddOrUpdate("test3", 30.0);
-            Assert.AreEqual(30.0, obs.LastValue, "Error in test3 key");
-
             data.AddOrUpdate("test2", 2.0);
             Assert.AreEqual(2.0, obs.LastValue, "Error in test2 key");
 
@@ -99,6 +93,22 @@ namespace ConcurrentObservableCollections.Tests
 
             data.AddOrUpdate("test2", 20.0);
             Assert.AreEqual(2.0, obs.LastValue, "Error in test2 key after remove obs");
+        }
+
+        [TestMethod]
+        public void TestClearCache()
+        {
+            var data = new ConcurrentObservableDictionary<string, double>();
+            var obs = new SimpleObserver();
+            data.AddPartialObserver(obs, "test", "test2", "test3");
+
+            data.AddOrUpdate("test", 2.0);
+            data.AddOrUpdate("test2", 12.0);
+            data.AddOrUpdate("test3", 32.0);
+            Assert.IsFalse(data.IsEmpty, "data is empty");
+
+            data.Clear();
+            Assert.IsTrue(data.IsEmpty, "data is not empty");
         }
     }
 }
