@@ -207,7 +207,8 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
             return tryUpdate;
         }
 
-        public IDictionaryObserver<TKey, TValue> AddPartialObserver(IDictionaryObserver<TKey, TValue> observer, params TKey[] keys)
+        public Dictionary<TKey, HashSet<IDictionaryObserver<TKey, TValue>>> AddPartialObserver(
+            IDictionaryObserver<TKey, TValue> observer, params TKey[] keys)
         {
             if (observer is null) throw new ArgumentNullException(nameof(observer));
             if (keys is null) throw new ArgumentNullException(nameof(keys));
@@ -221,10 +222,10 @@ namespace ConcurrentObservableCollections.ConcurrentObservableDictionary
                 });
             }
 
-            return observer;
+            return keys.ToDictionary(k => k, k => new HashSet<IDictionaryObserver<TKey, TValue>> {observer});
         }
 
-        public IDictionaryObserver<TKey, TValue> AddPartialObserver(
+        public Dictionary<TKey, HashSet<IDictionaryObserver<TKey, TValue>>> AddPartialObserver(
             Action<DictionaryChangedEventArgs<TKey, TValue>> action, params TKey[] keys)
         {
             return AddPartialObserver(new SimpleActionDictionaryObserver<TKey, TValue>(action), keys);
