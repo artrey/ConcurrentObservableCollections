@@ -3,20 +3,20 @@ using System;
 
 namespace ConcurrentObservableCollections.Demo
 {
-    class Program
+    internal static class Program
     {
-        private static readonly ConcurrentObservableDictionary<string, double> Cache
-            = new ConcurrentObservableDictionary<string,double>();
-
         private static void Main(string[] args)
         {
-            Cache.CollectionChanged += (s, e) => { Console.WriteLine($@"{e.Key}: {e.NewValue}"); };
-            Cache.AddPartialObserver(e => { Console.WriteLine($@"Auto observer: {e.Key}: {e.NewValue}"); }, "a");
-            Cache.AddOrUpdate("a", 22.2);
-            Cache.AddOrUpdate("b", 23.2);
-            Cache.AddOrUpdate("c", 24.2);
-            Cache.AddOrUpdate("a", 22.2);
-            Cache.AddOrUpdate("a", 25.2);
+            ConcurrentObservableDictionary<string, double> data = new();
+            
+            data.CollectionChanged += (_, e) => { Console.WriteLine($@"{e.Key}: {e.NewValue}"); };
+            data.AddPartialObserver(e => { Console.WriteLine($@"Auto observer: {e.Key}: {e.NewValue}"); }, "a");
+            
+            data.AddOrUpdate("a", 22.2);
+            data.AddOrUpdate("b", 23.2);
+            data.AddOrUpdate("c", 24.2);
+            data.AddOrUpdate("a", 22.2);
+            data.AddOrUpdate("a", 25.2);
         }
     }
 }

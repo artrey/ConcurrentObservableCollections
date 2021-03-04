@@ -12,7 +12,7 @@ namespace ConcurrentObservableCollections.Tests
         {
             var data = new ConcurrentObservableDictionary<string, double>();
             var updated = false;
-            data.CollectionChanged += (s, e) => { updated = true; };
+            data.CollectionChanged += (_, _) => { updated = true; };
 
             data.AddOrUpdate("test", 1.0);
 
